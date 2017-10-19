@@ -26,6 +26,9 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="tk.geta.alzheimervr.Inicio" />
+            <meta-data
+                android:name="android.support.v7.Sea"
+                android:resource="@xml/searchable" />
         </activity>
     </application>
 
