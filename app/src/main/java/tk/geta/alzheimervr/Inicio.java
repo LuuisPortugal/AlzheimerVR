@@ -6,14 +6,17 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import tk.geta.alzheimervr.Libraries.MyAppCompatActivity;
+import tk.geta.alzheimervr.View.Videos;
 
-public class Inicio extends MyAppCompatActivity
+public class Inicio extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    public static final String YOUTUBE_API_KEY = "AIzaSyBwHq8UHDRTAFtGTt6aTYNyCpZXPx-GH3U";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,16 +71,13 @@ public class Inicio extends MyAppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        // Handle activity_videos_navigation view item clicks here.
         int id = item.getItemId();
 
         switch (id) {
-            case R.id.nav_camera: break;
-            case R.id.nav_gallery: break;
             case R.id.nav_videos:
-                    startActivity(new Intent(this, Videos.class));
+                startActivity(new Intent(this, Videos.class));
                 break;
-            case R.id.nav_manage: break;
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
