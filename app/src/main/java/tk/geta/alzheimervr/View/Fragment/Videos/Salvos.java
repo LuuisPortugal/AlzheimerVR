@@ -8,10 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import tk.geta.alzheimervr.Adapter.VideoAdapter;
-import tk.geta.alzheimervr.Interface.OnGetPageTitle;
+import tk.geta.alzheimervr.Interface.OnGetPageTitleListener;
 import tk.geta.alzheimervr.R;
 
-public class Salvos extends Fragment implements OnGetPageTitle {
+public class Salvos extends Fragment implements OnGetPageTitleListener {
 
     private RecyclerView recyclerViewVideos;
 

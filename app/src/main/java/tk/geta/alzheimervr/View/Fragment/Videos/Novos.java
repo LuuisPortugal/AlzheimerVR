@@ -17,13 +17,13 @@ import com.google.api.services.youtube.model.SearchResult;
 
 import tk.geta.alzheimervr.Adapter.VideoAdapter;
 import tk.geta.alzheimervr.Dao.Youtube.Search;
-import tk.geta.alzheimervr.Interface.OnBackPressed;
-import tk.geta.alzheimervr.Interface.OnCreateOptionsMenu;
-import tk.geta.alzheimervr.Interface.OnGetPageTitle;
-import tk.geta.alzheimervr.Interface.OnPostSearchExecute;
+import tk.geta.alzheimervr.Interface.OnBackPressedListener;
+import tk.geta.alzheimervr.Interface.OnCreateOptionsMenuListener;
+import tk.geta.alzheimervr.Interface.OnGetPageTitleListener;
+import tk.geta.alzheimervr.Interface.OnPostSearchExecuteListener;
 import tk.geta.alzheimervr.R;
 
-public class Novos extends Fragment implements OnGetPageTitle, OnBackPressed, OnPostSearchExecute, View.OnScrollChangeListener, SearchView.OnQueryTextListener, OnCreateOptionsMenu {
+public class Novos extends Fragment implements OnGetPageTitleListener, OnBackPressedListener, OnPostSearchExecuteListener, OnCreateOptionsMenuListener, View.OnScrollChangeListener, SearchView.OnQueryTextListener {
 
     private String nextPageToken;
     private int pageInfoTotalResults;
@@ -69,13 +69,13 @@ public class Novos extends Fragment implements OnGetPageTitle, OnBackPressed, On
     }
 
     @Override
-    public void onBackPressedListener() {
+    public void onBackPressed() {
         if(!appBarSearchVideos.isIconified())
             appBarSearchVideos.onActionViewCollapsed();
     }
 
     @Override
-    public boolean onCreateOptionsMenuListener(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {
         getActivity().getMenuInflater().inflate(R.menu.activity_videos_toolbar, menu);
 
         SearchManager searchManager = (SearchManager) getContext().getSystemService(Context.SEARCH_SERVICE);
@@ -125,7 +125,7 @@ public class Novos extends Fragment implements OnGetPageTitle, OnBackPressed, On
     }
 
     @Override
-    public void onPostSearchExecuteListener(String searchMethodType, SearchListResponse searchListResponse) {
+    public void onPostSearchExecute(String searchMethodType, SearchListResponse searchListResponse) {
         nextPageToken = searchListResponse.getNextPageToken();
         pageInfoTotalResults = searchListResponse.getItems().size();
         if (searchListResponse.getPageInfo() != null)

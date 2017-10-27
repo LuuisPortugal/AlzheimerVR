@@ -7,13 +7,13 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.geta.alzheimervr.Interface.OnGetPageTitle;
+import tk.geta.alzheimervr.Interface.OnGetPageTitleListener;
 
-public class VideosPagerFragmentAdapter extends FragmentPagerAdapter {
+public class PagerFragmentAdapter extends FragmentPagerAdapter {
 
     private List<Fragment> mFragmentList = new ArrayList<>();
 
-    public VideosPagerFragmentAdapter(FragmentManager fm) {
+    public PagerFragmentAdapter(FragmentManager fm) {
         super(fm);
     }
 
@@ -30,8 +30,8 @@ public class VideosPagerFragmentAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         Fragment currentFragment = mFragmentList.get(position);
-        if (currentFragment instanceof OnGetPageTitle)
-            return ((OnGetPageTitle) currentFragment).onGetPageTitle();
+        if (currentFragment instanceof OnGetPageTitleListener)
+            return ((OnGetPageTitleListener) currentFragment).onGetPageTitle();
         return "Sem Titulo";
     }
 
@@ -39,12 +39,12 @@ public class VideosPagerFragmentAdapter extends FragmentPagerAdapter {
         return mFragmentList;
     }
 
-    public VideosPagerFragmentAdapter setFragmentList(List<Fragment> mFragmentListParam){
+    public PagerFragmentAdapter setFragmentList(List<Fragment> mFragmentListParam){
         mFragmentList = mFragmentListParam;
         return this;
     }
 
-    public VideosPagerFragmentAdapter addFragment(Fragment fragmentParam){
+    public PagerFragmentAdapter addFragment(Fragment fragmentParam){
         mFragmentList.add(fragmentParam);
         return this;
     }

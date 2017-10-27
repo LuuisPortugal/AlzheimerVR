@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.api.services.youtube.model.SearchResult;
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -64,11 +63,11 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
         String url = mValues.get(position).getSnippet().getThumbnails().getDefault().getUrl();
         if(url != null && !url.isEmpty())
             Picasso.with(context)
-                    .load(url)
-                    .resize(125, 125)
-                    .centerCrop()
-                    .transform(new CircleTransform())
-                    .into(holder.thumbnail);
+                .load(url)
+                .resize(125, 125)
+                .centerCrop()
+                .transform(new CircleTransform())
+                .into(holder.thumbnail);
 
         String title = mValues.get(position).getSnippet().getTitle();
         if(title != null && !title.isEmpty())
@@ -83,8 +82,8 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
             public void onClick(View itemClicked) {
                 Intent intent = new Intent(itemClicked.getContext(), Videos.class);
                 intent.putExtra(
-                        Videos.ARG_VIDEO_ID,
-                        new Gson().toJson(holder.mItem)
+                    Videos.ARG_VIDEO_ID,
+                    holder.mItem.getId().getVideoId()
                 );
 
                 itemClicked.getContext().startActivity(intent);

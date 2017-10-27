@@ -1,5 +1,5 @@
 package tk.geta.alzheimervr.Interface;
 
-public interface OnGetPageTitle {
+public interface OnGetPageTitleListener {
     String onGetPageTitle();
 }
