@@ -22,6 +22,7 @@ import tk.geta.alzheimervr.Interface.OnCreateOptionsMenuListener;
 import tk.geta.alzheimervr.Interface.OnGetPageTitleListener;
 import tk.geta.alzheimervr.Interface.OnPostSearchExecuteListener;
 import tk.geta.alzheimervr.R;
+import tk.geta.alzheimervr.Util.Keyboard;
 
 public class Novos extends Fragment implements OnGetPageTitleListener, OnBackPressedListener, OnPostSearchExecuteListener, OnCreateOptionsMenuListener, View.OnScrollChangeListener, SearchView.OnQueryTextListener {
 
@@ -33,7 +34,7 @@ public class Novos extends Fragment implements OnGetPageTitleListener, OnBackPre
     private VideoAdapter adapterRecyclerViewVideos;
     private LinearLayoutManager linearLayoutManager;
     private boolean isRefreshingOnFinishRecicleview = false;
-    private String defaultQueryAppBarSearchVideos = "Realidade Virtual 360";
+    private String defaultQueryAppBarSearchVideos = "Maquete 360";
 
     public Novos() {
 
@@ -97,6 +98,10 @@ public class Novos extends Fragment implements OnGetPageTitleListener, OnBackPre
                 .setOnPostExecuteListener(this)
                 .setMaxResult(50)
                 .execute();
+
+        Keyboard.hide(getContext());
+        appBarSearchVideos.clearFocus();
+
         return true;
     }
 

@@ -35,6 +35,7 @@
 
     <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
+        android:id="@+id/activity_videos_detail_nested_scroll_view"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
         tools:context="tk.geta.alzheimervr.View.Detail.Videos"
@@ -63,17 +64,19 @@
         fab:menu_colorPressed="@color/colorPrimaryDark">
 
         <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/activity_videos_detail_fab_menu_item_assistir"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_play_circle_outline_black_24dp"
+            android:src="@drawable/ic_play_circle_outline_white_24dp"
             fab:fab_size="mini"
             fab:fab_label="Assistir"
             style="@style/MenuButtonsStyle" />
 
         <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/activity_videos_detail_fab_menu_item_download"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_menu_camera"
+            android:src="@drawable/ic_cloud_download_white_24dp"
             fab:fab_size="mini"
             fab:fab_label="Download"
             style="@style/MenuButtonsStyle" />

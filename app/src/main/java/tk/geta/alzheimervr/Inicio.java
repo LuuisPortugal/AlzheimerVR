@@ -11,6 +11,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.google.gson.Gson;
+
+import tk.geta.alzheimervr.Model.Generic;
 import tk.geta.alzheimervr.View.Videos;
 
 public class Inicio extends AppCompatActivity
@@ -22,6 +25,10 @@ public class Inicio extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
+
+
+        System.out.println("asdasdasd");
+        System.out.println(new Gson().toJson(Generic.listAll(Generic.class)));
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
