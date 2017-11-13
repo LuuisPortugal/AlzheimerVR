@@ -19,7 +19,7 @@ import com.google.api.services.youtube.model.SearchListResponse;
 import java.io.IOException;
 
 import tk.geta.alzheimervr.Inicio;
-import tk.geta.alzheimervr.Interface.OnPostSearchExecuteListener;
+import tk.geta.alzheimervr.Interface.OnPostYoutubeSearchExecuteListener;
 import tk.geta.alzheimervr.R;
 import tk.geta.alzheimervr.Util.Error;
 
@@ -33,7 +33,7 @@ public class Search extends AsyncTask<Void, Integer, SearchListResponse> {
     private Context context;
     private YouTube.Search.List search;
     private ProgressDialog progressDialog;
-    private OnPostSearchExecuteListener onPostSearchExecuteListenerListener;
+    private OnPostYoutubeSearchExecuteListener onPostYoutubeSearchExecuteListenerListener;
     private String searchMethodType;
     private long maxResult = 25;
     private String nextPageToken;
@@ -81,11 +81,14 @@ public class Search extends AsyncTask<Void, Integer, SearchListResponse> {
             search.setKey(Inicio.YOUTUBE_API_KEY);
             return search.execute();
         } catch (GoogleJsonResponseException e) {
+            Search.this.cancel(true);
             Error.execute(context, e, "There was a service error: " + e.getDetails().getCode() + " : "
                     + e.getDetails().getMessage());
         } catch (IOException e) {
+            Search.this.cancel(true);
             Error.execute(context, e, "There was an IO error: " + e.getCause() + " : " + e.getMessage());
         } catch (Throwable t) {
+            Search.this.cancel(true);
             Error.execute(context, t);
         }
 
@@ -104,7 +107,6 @@ public class Search extends AsyncTask<Void, Integer, SearchListResponse> {
             search = youtube.search().list("id,snippet");
             search.setQ(param);
             search.setType("video");
-            search.setFields("nextPageToken,pageInfo/totalResults,items(id/videoId,snippet/title,snippet/channelId,snippet/channelTitle,snippet/thumbnails/default/url)");
 
         } catch (IOException e) {
             Error.execute(context, e, "There was an IO error: " + e.getCause() + " : " + e.getMessage());
@@ -135,8 +137,8 @@ public class Search extends AsyncTask<Void, Integer, SearchListResponse> {
 
     @Override
     protected void onPostExecute(SearchListResponse searchListResponse) {
-        if(onPostSearchExecuteListenerListener != null)
-            onPostSearchExecuteListenerListener.onPostSearchExecute(searchMethodType, searchListResponse);
+        if(onPostYoutubeSearchExecuteListenerListener != null)
+            onPostYoutubeSearchExecuteListenerListener.onPostYoutubeSearchExecute(searchMethodType, searchListResponse);
 
         progressDialog.dismiss();
         super.onPostExecute(searchListResponse);
@@ -150,8 +152,8 @@ public class Search extends AsyncTask<Void, Integer, SearchListResponse> {
         super.onProgressUpdate(values);
     }
 
-    public Search setOnPostExecuteListener(OnPostSearchExecuteListener onPostSearchExecuteListenerListener) {
-        this.onPostSearchExecuteListenerListener = onPostSearchExecuteListenerListener;
+    public Search setOnPostExecuteListener(OnPostYoutubeSearchExecuteListener onPostYoutubeSearchExecuteListenerListener) {
+        this.onPostYoutubeSearchExecuteListenerListener = onPostYoutubeSearchExecuteListenerListener;
         return this;
     }
 }

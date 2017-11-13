@@ -35,22 +35,20 @@ import at.huber.youtubeExtractor.VideoMeta;
 import at.huber.youtubeExtractor.YouTubeExtractor;
 import at.huber.youtubeExtractor.YtFile;
 import tk.geta.alzheimervr.Dao.Youtube.Video;
-import tk.geta.alzheimervr.Interface.OnPostVideoExecuteListener;
+import tk.geta.alzheimervr.Interface.OnPostYoutubeVideoExecuteListener;
 import tk.geta.alzheimervr.Model.Generic;
 import tk.geta.alzheimervr.R;
 import tk.geta.alzheimervr.Util.Error;
 
-public class Videos extends AppCompatActivity implements OnPostVideoExecuteListener {
+public class Videos extends AppCompatActivity implements OnPostYoutubeVideoExecuteListener {
 
     public static final String ARG_VIDEO_ID = "video_id";
 
     public long downloadServiceVideoResquestID;
-    public DownloadManager downloadManager;
     public Toolbar toolbar;
     public ProgressDialog progressDialog;
     public TextView textViewDescription;
     public com.google.api.services.youtube.model.Video video;
-    public VideoMeta videoMeta;
     public CollapsingToolbarLayout collapsingToolbarLayout;
     public FloatingActionButton floatingActionButtonAssistir;
     public FloatingActionButton floatingActionButtonDownload;
@@ -135,7 +133,6 @@ public class Videos extends AppCompatActivity implements OnPostVideoExecuteListe
                     if (downloadStatus == DownloadManager.STATUS_SUCCESSFUL) {
                         new Generic()
                             .setSequence(video.getId())
-                            .setClassName(video.getClass())
                             .setData(video)
                             .save();
                     } else {
@@ -219,7 +216,7 @@ public class Videos extends AppCompatActivity implements OnPostVideoExecuteListe
     }
 
     @Override
-    public void onPostVideoExecute(String videoMethodType, VideoListResponse videoListResponse) {
+    public void onPostYoutubeVideoExecute(String videoMethodType, VideoListResponse videoListResponse) {
         switch (videoMethodType) {
             case Video.BY_IDS_VIDEO_METHOD_TYPE:
                 video = videoListResponse.getItems().get(0);

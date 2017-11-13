@@ -19,7 +19,7 @@ import com.google.api.services.youtube.model.VideoListResponse;
 import java.io.IOException;
 
 import tk.geta.alzheimervr.Inicio;
-import tk.geta.alzheimervr.Interface.OnPostVideoExecuteListener;
+import tk.geta.alzheimervr.Interface.OnPostYoutubeVideoExecuteListener;
 import tk.geta.alzheimervr.R;
 import tk.geta.alzheimervr.Util.Error;
 
@@ -32,7 +32,7 @@ public class Video extends AsyncTask<Void, Integer, VideoListResponse> {
     private Context context;
     private YouTube.Videos.List videos;
     private ProgressDialog progressDialog;
-    private OnPostVideoExecuteListener onPostVideoExecuteListener;
+    private OnPostYoutubeVideoExecuteListener onPostYoutubeVideoExecuteListener;
     private String videoMethodType;
     private long maxResult = 25;
     private String nextPageToken;
@@ -112,8 +112,8 @@ public class Video extends AsyncTask<Void, Integer, VideoListResponse> {
 
     @Override
     protected void onPostExecute(VideoListResponse videoListResponse) {
-        if(onPostVideoExecuteListener != null)
-            onPostVideoExecuteListener.onPostVideoExecute(videoMethodType, videoListResponse);
+        if(onPostYoutubeVideoExecuteListener != null)
+            onPostYoutubeVideoExecuteListener.onPostYoutubeVideoExecute(videoMethodType, videoListResponse);
 
         progressDialog.dismiss();
         super.onPostExecute(videoListResponse);
@@ -127,8 +127,8 @@ public class Video extends AsyncTask<Void, Integer, VideoListResponse> {
         super.onProgressUpdate(values);
     }
 
-    public Video setOnPostExecuteListener(OnPostVideoExecuteListener onPostExecuteListener) {
-        this.onPostVideoExecuteListener = onPostExecuteListener;
+    public Video setOnPostExecuteListener(OnPostYoutubeVideoExecuteListener onPostExecuteListener) {
+        this.onPostYoutubeVideoExecuteListener = onPostExecuteListener;
         return this;
     }
 }

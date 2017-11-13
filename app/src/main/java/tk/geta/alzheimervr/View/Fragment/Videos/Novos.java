@@ -20,11 +20,11 @@ import tk.geta.alzheimervr.Dao.Youtube.Search;
 import tk.geta.alzheimervr.Interface.OnBackPressedListener;
 import tk.geta.alzheimervr.Interface.OnCreateOptionsMenuListener;
 import tk.geta.alzheimervr.Interface.OnGetPageTitleListener;
-import tk.geta.alzheimervr.Interface.OnPostSearchExecuteListener;
+import tk.geta.alzheimervr.Interface.OnPostYoutubeSearchExecuteListener;
 import tk.geta.alzheimervr.R;
 import tk.geta.alzheimervr.Util.Keyboard;
 
-public class Novos extends Fragment implements OnGetPageTitleListener, OnBackPressedListener, OnPostSearchExecuteListener, OnCreateOptionsMenuListener, View.OnScrollChangeListener, SearchView.OnQueryTextListener {
+public class Novos extends Fragment implements OnGetPageTitleListener, OnBackPressedListener, OnPostYoutubeSearchExecuteListener, OnCreateOptionsMenuListener, View.OnScrollChangeListener, SearchView.OnQueryTextListener {
 
     private String nextPageToken;
     private int pageInfoTotalResults;
@@ -130,7 +130,7 @@ public class Novos extends Fragment implements OnGetPageTitleListener, OnBackPre
     }
 
     @Override
-    public void onPostSearchExecute(String searchMethodType, SearchListResponse searchListResponse) {
+    public void onPostYoutubeSearchExecute(String searchMethodType, SearchListResponse searchListResponse) {
         nextPageToken = searchListResponse.getNextPageToken();
         pageInfoTotalResults = searchListResponse.getItems().size();
         if (searchListResponse.getPageInfo() != null)
