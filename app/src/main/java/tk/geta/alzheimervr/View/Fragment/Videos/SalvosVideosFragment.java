@@ -7,32 +7,34 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import tk.geta.alzheimervr.Adapter.VideoAdapter;
-import tk.geta.alzheimervr.Dao.SqLite.Video;
-import tk.geta.alzheimervr.Interface.OnGetPageTitleListener;
-import tk.geta.alzheimervr.Interface.OnPostSqLiteListVideoExecuteListener;
+import tk.geta.alzheimervr.Dao.SqLite.VideoSqLiteDao;
+import tk.geta.alzheimervr.Interface.OnGetPageTitleListenerInterface;
+import tk.geta.alzheimervr.Interface.OnPostSqLiteListVideoExecuteListenerInterface;
+import tk.geta.alzheimervr.Model.Youtube.VideoYoutubeModel;
 import tk.geta.alzheimervr.R;
+import tk.geta.alzheimervr.Util.Error;
 
-public class Salvos extends Fragment implements OnGetPageTitleListener, OnPostSqLiteListVideoExecuteListener {
+public class SalvosVideosFragment extends Fragment implements OnGetPageTitleListenerInterface, OnPostSqLiteListVideoExecuteListenerInterface {
 
     private RecyclerView recyclerViewVideos;
     private VideoAdapter adapterRecyclerViewVideos;
 
-    public Salvos() {
+    public SalvosVideosFragment() {
 
     }
 
-    public static Salvos newInstance() {
-        return new Salvos();
+    public static SalvosVideosFragment newInstance() {
+        return new SalvosVideosFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new Video(getContext())
-            .setOnPostSqLiteListVideoExecuteListener(this)
+        new VideoSqLiteDao(getContext())
+            .setOnPostSqLiteListVideoExecuteListenerInterface(this)
             .execute();
     }
 
@@ -49,15 +51,18 @@ public class Salvos extends Fragment implements OnGetPageTitleListener, OnPostSq
     }
 
     @Override
-    public String onGetPageTitle() {
+    public String onGetPageTitleListener() {
         return "Salvos";
     }
 
     @Override
-    public void onPostSqLiteListVideoExecute(ArrayList<com.google.api.services.youtube.model.Video> videoList) {
-
-        for (com.google.api.services.youtube.model.Video video : videoList) {
-            System.out.println(video);
+    public void onPostSqLiteListVideoExecuteListener(List<VideoYoutubeModel> videoList) {
+        try {
+            adapterRecyclerViewVideos
+                .setValues(videoList)
+                .notifyDataSetChanged();
+        } catch (Exception e) {
+            Error.execute(getContext(), e);
         }
     }
 }

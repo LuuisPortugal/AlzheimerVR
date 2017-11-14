@@ -82,6 +82,7 @@ public class Inicio extends AppCompatActivity
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+        drawer.clearFocus();
         return true;
     }
 }

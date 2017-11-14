@@ -19,11 +19,11 @@ import com.google.api.services.youtube.model.SearchListResponse;
 import java.io.IOException;
 
 import tk.geta.alzheimervr.Inicio;
-import tk.geta.alzheimervr.Interface.OnPostYoutubeSearchExecuteListener;
+import tk.geta.alzheimervr.Interface.OnPostYoutubeSearchExecuteListenerInterface;
 import tk.geta.alzheimervr.R;
 import tk.geta.alzheimervr.Util.Error;
 
-public class Search extends AsyncTask<Void, Integer, SearchListResponse> {
+public class SearchYoutubeDao extends AsyncTask<Void, Integer, SearchListResponse> {
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
@@ -33,22 +33,22 @@ public class Search extends AsyncTask<Void, Integer, SearchListResponse> {
     private Context context;
     private YouTube.Search.List search;
     private ProgressDialog progressDialog;
-    private OnPostYoutubeSearchExecuteListener onPostYoutubeSearchExecuteListenerListener;
+    private OnPostYoutubeSearchExecuteListenerInterface onPostYoutubeSearchExecuteListenerListenerInterface;
     private String searchMethodType;
     private long maxResult = 25;
     private String nextPageToken;
 
-    public Search setNextPageToken(String nextPageTokenParam) {
+    public SearchYoutubeDao setNextPageToken(String nextPageTokenParam) {
         nextPageToken = nextPageTokenParam;
         return this;
     }
 
-    public Search setMaxResult(long maxResultParam) {
+    public SearchYoutubeDao setMaxResult(long maxResultParam) {
         maxResult = maxResultParam;
         return this;
     }
 
-    public Search(@NonNull Context ctx) {
+    public SearchYoutubeDao(@NonNull Context ctx) {
         context = ctx;
 
         progressDialog = new ProgressDialog(context);
@@ -58,7 +58,7 @@ public class Search extends AsyncTask<Void, Integer, SearchListResponse> {
         progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                Search.this.cancel(true);
+                SearchYoutubeDao.this.cancel(true);
                 progressDialog.setProgress(0);
                 progressDialog.dismiss();
             }
@@ -81,21 +81,21 @@ public class Search extends AsyncTask<Void, Integer, SearchListResponse> {
             search.setKey(Inicio.YOUTUBE_API_KEY);
             return search.execute();
         } catch (GoogleJsonResponseException e) {
-            Search.this.cancel(true);
+            SearchYoutubeDao.this.cancel(true);
             Error.execute(context, e, "There was a service error: " + e.getDetails().getCode() + " : "
                     + e.getDetails().getMessage());
         } catch (IOException e) {
-            Search.this.cancel(true);
+            SearchYoutubeDao.this.cancel(true);
             Error.execute(context, e, "There was an IO error: " + e.getCause() + " : " + e.getMessage());
         } catch (Throwable t) {
-            Search.this.cancel(true);
+            SearchYoutubeDao.this.cancel(true);
             Error.execute(context, t);
         }
 
         return null;
     }
 
-    public Search byQuery(String param) {
+    public SearchYoutubeDao byQuery(String param) {
         try {
             searchMethodType = BY_QUERY_SEARCH_METHOD_TYPE;
 
@@ -115,7 +115,7 @@ public class Search extends AsyncTask<Void, Integer, SearchListResponse> {
         return this;
     }
 
-    public Search byChannelId(String param) {
+    public SearchYoutubeDao byChannelId(String param) {
         try {
             searchMethodType = BY_CHANNEL_ID_SEARCH_METHOD_TYPE;
 
@@ -137,8 +137,8 @@ public class Search extends AsyncTask<Void, Integer, SearchListResponse> {
 
     @Override
     protected void onPostExecute(SearchListResponse searchListResponse) {
-        if(onPostYoutubeSearchExecuteListenerListener != null)
-            onPostYoutubeSearchExecuteListenerListener.onPostYoutubeSearchExecute(searchMethodType, searchListResponse);
+        if(onPostYoutubeSearchExecuteListenerListenerInterface != null)
+            onPostYoutubeSearchExecuteListenerListenerInterface.onPostYoutubeSearchExecuteListener(searchMethodType, searchListResponse);
 
         progressDialog.dismiss();
         super.onPostExecute(searchListResponse);
@@ -152,8 +152,8 @@ public class Search extends AsyncTask<Void, Integer, SearchListResponse> {
         super.onProgressUpdate(values);
     }
 
-    public Search setOnPostExecuteListener(OnPostYoutubeSearchExecuteListener onPostYoutubeSearchExecuteListenerListener) {
-        this.onPostYoutubeSearchExecuteListenerListener = onPostYoutubeSearchExecuteListenerListener;
+    public SearchYoutubeDao setOnPostExecuteListener(OnPostYoutubeSearchExecuteListenerInterface onPostYoutubeSearchExecuteListenerListenerInterface) {
+        this.onPostYoutubeSearchExecuteListenerListenerInterface = onPostYoutubeSearchExecuteListenerListenerInterface;
         return this;
     }
 }

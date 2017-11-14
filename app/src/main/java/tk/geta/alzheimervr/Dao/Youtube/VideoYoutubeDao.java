@@ -19,11 +19,11 @@ import com.google.api.services.youtube.model.VideoListResponse;
 import java.io.IOException;
 
 import tk.geta.alzheimervr.Inicio;
-import tk.geta.alzheimervr.Interface.OnPostYoutubeVideoExecuteListener;
+import tk.geta.alzheimervr.Interface.OnPostYoutubeVideoExecuteListenerInterface;
 import tk.geta.alzheimervr.R;
 import tk.geta.alzheimervr.Util.Error;
 
-public class Video extends AsyncTask<Void, Integer, VideoListResponse> {
+public class VideoYoutubeDao extends AsyncTask<Void, Integer, VideoListResponse> {
     private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
     private static final JsonFactory JSON_FACTORY = new JacksonFactory();
 
@@ -32,22 +32,22 @@ public class Video extends AsyncTask<Void, Integer, VideoListResponse> {
     private Context context;
     private YouTube.Videos.List videos;
     private ProgressDialog progressDialog;
-    private OnPostYoutubeVideoExecuteListener onPostYoutubeVideoExecuteListener;
+    private OnPostYoutubeVideoExecuteListenerInterface onPostYoutubeVideoExecuteListenerInterface;
     private String videoMethodType;
     private long maxResult = 25;
     private String nextPageToken;
 
-    public Video setNextPageToken(String nextPageTokenParam) {
+    public VideoYoutubeDao setNextPageToken(String nextPageTokenParam) {
         nextPageToken = nextPageTokenParam;
         return this;
     }
 
-    public Video setMaxResult(long maxResultParam) {
+    public VideoYoutubeDao setMaxResult(long maxResultParam) {
         maxResult = maxResultParam;
         return this;
     }
 
-    public Video(@NonNull Context ctx) {
+    public VideoYoutubeDao(@NonNull Context ctx) {
         context = ctx;
 
         progressDialog = new ProgressDialog(context);
@@ -57,7 +57,7 @@ public class Video extends AsyncTask<Void, Integer, VideoListResponse> {
         progressDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
             @Override
             public void onCancel(DialogInterface dialog) {
-                Video.this.cancel(true);
+                VideoYoutubeDao.this.cancel(true);
                 progressDialog.setProgress(0);
                 progressDialog.dismiss();
             }
@@ -91,7 +91,7 @@ public class Video extends AsyncTask<Void, Integer, VideoListResponse> {
         return null;
     }
 
-    public Video byIDs(String param) {
+    public VideoYoutubeDao byIDs(String param) {
         try {
             videoMethodType = BY_IDS_VIDEO_METHOD_TYPE;
 
@@ -112,8 +112,8 @@ public class Video extends AsyncTask<Void, Integer, VideoListResponse> {
 
     @Override
     protected void onPostExecute(VideoListResponse videoListResponse) {
-        if(onPostYoutubeVideoExecuteListener != null)
-            onPostYoutubeVideoExecuteListener.onPostYoutubeVideoExecute(videoMethodType, videoListResponse);
+        if(onPostYoutubeVideoExecuteListenerInterface != null)
+            onPostYoutubeVideoExecuteListenerInterface.onPostYoutubeVideoExecuteListener(videoMethodType, videoListResponse);
 
         progressDialog.dismiss();
         super.onPostExecute(videoListResponse);
@@ -127,8 +127,8 @@ public class Video extends AsyncTask<Void, Integer, VideoListResponse> {
         super.onProgressUpdate(values);
     }
 
-    public Video setOnPostExecuteListener(OnPostYoutubeVideoExecuteListener onPostExecuteListener) {
-        this.onPostYoutubeVideoExecuteListener = onPostExecuteListener;
+    public VideoYoutubeDao setOnPostYoutubeVideoExecuteListenerInterface(OnPostYoutubeVideoExecuteListenerInterface onPostExecuteListener) {
+        this.onPostYoutubeVideoExecuteListenerInterface = onPostExecuteListener;
         return this;
     }
 }

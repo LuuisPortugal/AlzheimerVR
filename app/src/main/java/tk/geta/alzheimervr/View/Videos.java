@@ -9,13 +9,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
 import tk.geta.alzheimervr.Adapter.PagerFragmentAdapter;
-import tk.geta.alzheimervr.Interface.OnBackPressedListener;
-import tk.geta.alzheimervr.Interface.OnCreateOptionsMenuListener;
+import tk.geta.alzheimervr.Interface.OnBackPressedListenerInterface;
+import tk.geta.alzheimervr.Interface.OnCreateOptionsMenuListenerInterface;
 import tk.geta.alzheimervr.R;
-import tk.geta.alzheimervr.View.Fragment.Videos.Novos;
-import tk.geta.alzheimervr.View.Fragment.Videos.Salvos;
+import tk.geta.alzheimervr.View.Fragment.Videos.NovosVideosFragment;
+import tk.geta.alzheimervr.View.Fragment.Videos.SalvosVideosFragment;
 
-public class Videos extends AppCompatActivity implements TabLayout.OnTabSelectedListener, OnBackPressedListener {
+public class Videos extends AppCompatActivity implements TabLayout.OnTabSelectedListener, OnBackPressedListenerInterface {
 
     private TabLayout tabLayout;
     private ViewPager mViewPager;
@@ -29,8 +29,8 @@ public class Videos extends AppCompatActivity implements TabLayout.OnTabSelected
         mViewPager = (ViewPager) findViewById(R.id.activity_videos_viewpager);
         mViewPager.setAdapter(
                 new PagerFragmentAdapter(getSupportFragmentManager())
-                        .addFragment(Novos.newInstance())
-                        .addFragment(Salvos.newInstance())
+                        .addFragment(NovosVideosFragment.newInstance())
+                        .addFragment(SalvosVideosFragment.newInstance())
         );
 
         tabLayout = (TabLayout) findViewById(R.id.activity_videos_tabs);
@@ -58,10 +58,10 @@ public class Videos extends AppCompatActivity implements TabLayout.OnTabSelected
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressedListener() {
         Fragment currentFragment = getSupportFragmentManager().getFragments().get(getSupportFragmentManager().getBackStackEntryCount());
-        if (currentFragment instanceof OnBackPressedListener)
-            ((OnBackPressedListener) currentFragment).onBackPressed();
+        if (currentFragment instanceof OnBackPressedListenerInterface)
+            ((OnBackPressedListenerInterface) currentFragment).onBackPressedListener();
         else
             super.onBackPressed();
     }
@@ -69,8 +69,8 @@ public class Videos extends AppCompatActivity implements TabLayout.OnTabSelected
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Fragment currentFragment = getSupportFragmentManager().getFragments().get(getSupportFragmentManager().getBackStackEntryCount());
-        if (currentFragment instanceof OnCreateOptionsMenuListener)
-            return ((OnCreateOptionsMenuListener) currentFragment).onCreateOptionsMenu(menu);
+        if (currentFragment instanceof OnCreateOptionsMenuListenerInterface)
+            return ((OnCreateOptionsMenuListenerInterface) currentFragment).onCreateOptionsMenuListener(menu);
         else
             return super.onCreateOptionsMenu(menu);
     }

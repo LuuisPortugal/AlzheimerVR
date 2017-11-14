@@ -7,7 +7,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-import tk.geta.alzheimervr.Interface.OnGetPageTitleListener;
+import tk.geta.alzheimervr.Interface.OnGetPageTitleListenerInterface;
 
 public class PagerFragmentAdapter extends FragmentPagerAdapter {
 
@@ -30,8 +30,8 @@ public class PagerFragmentAdapter extends FragmentPagerAdapter {
     @Override
     public CharSequence getPageTitle(int position) {
         Fragment currentFragment = mFragmentList.get(position);
-        if (currentFragment instanceof OnGetPageTitleListener)
-            return ((OnGetPageTitleListener) currentFragment).onGetPageTitle();
+        if (currentFragment instanceof OnGetPageTitleListenerInterface)
+            return ((OnGetPageTitleListenerInterface) currentFragment).onGetPageTitleListener();
         return "Sem Titulo";
     }
 
