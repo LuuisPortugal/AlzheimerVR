@@ -54,11 +54,15 @@ public class NovosVideosFragment extends Fragment implements OnGetPageTitleListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
 
+    @Override
+    public void onResume() {
         new SearchYoutubeDao(getContext()).byQuery(defaultQueryAppBarSearchVideos)
                 .setOnPostExecuteListener(this)
                 .setMaxResult(50)
                 .execute();
+        super.onResume();
     }
 
     @Override

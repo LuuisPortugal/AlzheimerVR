@@ -31,16 +31,20 @@ import com.google.api.services.youtube.model.VideoListResponse;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.util.List;
+
 import at.huber.youtubeExtractor.VideoMeta;
 import at.huber.youtubeExtractor.YouTubeExtractor;
 import at.huber.youtubeExtractor.YtFile;
+import tk.geta.alzheimervr.Dao.SqLite.VideoSqLiteDao;
 import tk.geta.alzheimervr.Dao.Youtube.VideoYoutubeDao;
+import tk.geta.alzheimervr.Interface.OnPostSqLiteVideoExecuteListenerInterface;
 import tk.geta.alzheimervr.Interface.OnPostYoutubeVideoExecuteListenerInterface;
 import tk.geta.alzheimervr.Model.Youtube.VideoYoutubeModel;
 import tk.geta.alzheimervr.R;
 import tk.geta.alzheimervr.Util.Error;
 
-public class NovosVideosFragmentDetail extends AppCompatActivity implements OnPostYoutubeVideoExecuteListenerInterface {
+public class NovosVideosFragmentDetail extends AppCompatActivity implements OnPostSqLiteVideoExecuteListenerInterface, OnPostYoutubeVideoExecuteListenerInterface {
 
     public static final String ARG_VIDEO_ID = "video_id";
 
@@ -198,8 +202,6 @@ public class NovosVideosFragmentDetail extends AppCompatActivity implements OnPo
         progressDialog.setIndeterminate(true);
 
         intentFilterBroadcastReceiverSuccessful = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        if(intentBroadcastReceiverSuccessful == null)
-            intentBroadcastReceiverSuccessful = registerReceiver(broadcastReceiverSuccessful, intentFilterBroadcastReceiverSuccessful);
 
         if (getIntent().getExtras().containsKey(ARG_VIDEO_ID)) {
             String videoID = getIntent().getStringExtra(ARG_VIDEO_ID);
@@ -227,6 +229,11 @@ public class NovosVideosFragmentDetail extends AppCompatActivity implements OnPo
             case VideoYoutubeDao.BY_IDS_VIDEO_METHOD_TYPE:
                 video = videoListResponse.getItems().get(0);
 
+                new VideoSqLiteDao(this)
+                    .setIdVideo(video.getId())
+                    .setOnPostSqLiteVideoExecuteListenerInterface(this)
+                    .execute();
+
                 toolbar.setTitle(video.getSnippet().getTitle());
                 toolbar.setSubtitle(video.getSnippet().getChannelTitle());
                 textViewDescription.setText(video.getSnippet().getDescription());
@@ -242,6 +249,24 @@ public class NovosVideosFragmentDetail extends AppCompatActivity implements OnPo
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onPostSqLiteVideoExecuteListener(List<VideoYoutubeModel> videoList) {
+        if (!videoList.isEmpty())
+            floatingActionButtonDownload.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onResume() {
+        registerReceiver(broadcastReceiverSuccessful, intentFilterBroadcastReceiverSuccessful);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(broadcastReceiverSuccessful);
+        super.onPause();
     }
 
     public Thumbnail getMaxResolution(ThumbnailDetails thumbnailDetails) {

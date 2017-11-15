@@ -33,9 +33,14 @@ public class SalvosVideosFragment extends Fragment implements OnGetPageTitleList
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onResume() {
         new VideoSqLiteDao(getContext())
-            .setOnPostSqLiteListVideoExecuteListenerInterface(this)
-            .execute();
+                .setOnPostSqLiteListVideoExecuteListenerInterface(this)
+                .execute();
+        super.onResume();
     }
 
     @Override

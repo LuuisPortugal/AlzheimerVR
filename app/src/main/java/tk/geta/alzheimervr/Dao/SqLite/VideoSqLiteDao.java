@@ -47,7 +47,7 @@ public class VideoSqLiteDao extends AsyncTask<Void, Integer, List<VideoYoutubeMo
     protected List<VideoYoutubeModel> doInBackground(Void... params) {
         try {
             if (this.onPostSqLiteVideoExecuteListenerInterface != null)
-                return VideoYoutubeModel.find(VideoYoutubeModel.class, "idVideo = ?", this.idVideo);
+                return VideoYoutubeModel.find(VideoYoutubeModel.class, "id_video = ?", this.idVideo);
 
             if (this.onPostSqLiteListVideoExecuteListenerInterface != null)
                 return VideoYoutubeModel.listAll(VideoYoutubeModel.class);
