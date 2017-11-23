@@ -65,4 +65,17 @@ public class ThumbnailsYoutubeModel extends SugarRecord {
         this.standard = standard;
         return this;
     }
+
+    public static ThumbnailDetailYoutubeModel getMaxResolution(ThumbnailsYoutubeModel thumbnailDetails) {
+        if (thumbnailDetails.getMaxres() != null)
+            return thumbnailDetails.getMaxres();
+        else if (thumbnailDetails.getHigh() != null)
+            return thumbnailDetails.getHigh();
+        else if (thumbnailDetails.getMedium() != null)
+            return thumbnailDetails.getMedium();
+        else if (thumbnailDetails.getStandard() != null)
+            return thumbnailDetails.getStandard();
+        else
+            return thumbnailDetails.getDefault();
+    }
 }

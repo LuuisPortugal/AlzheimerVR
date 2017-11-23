@@ -13,18 +13,25 @@
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 
     <application
+        android:name="com.orm.SugarApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
-        android:name="com.orm.SugarApp">
-
-        <meta-data android:name="DATABASE" android:value="AlzheimerVRDB_7.db" />
-        <meta-data android:name="VERSION" android:value="7" />
-        <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="tk.geta.alzheimervr" />
+        android:theme="@style/AppTheme">
+        <meta-data
+            android:name="DATABASE"
+            android:value="AlzheimerVRDB_8_5.db" />
+        <meta-data
+            android:name="VERSION"
+            android:value="8" />
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true" />
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="tk.geta.alzheimervr" />
 
         <activity
             android:name=".Inicio"
@@ -49,13 +56,32 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name=".View.Detail.NovosVideosFragmentDetail"
+            android:name=".View.Detail.NovoVideoFragmentDetail"
             android:label="@string/title_activity_videos_detail"
             android:parentActivityName=".View.Videos"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="tk.geta.alzheimervr.View.Videos" />
+        </activity>
+        <activity
+            android:name=".View.Detail.SalvoVideoFragmentDetail"
+            android:label="@string/title_activity_videos_detail"
+            android:parentActivityName=".View.Videos"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="tk.geta.alzheimervr.View.Videos" />
+        </activity>
+        <activity
+            android:name=".View.Player.VrPlayerActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_vr_player"
+            android:parentActivityName=".View.Detail.SalvoVideoFragmentDetail"
+            android:theme="@style/FullscreenTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="tk.geta.alzheimervr.View.Detail.SalvoVideoFragmentDetail" />
         </activity>
     </application>
 

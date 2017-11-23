@@ -31,16 +31,23 @@ import com.google.api.services.youtube.model.VideoListResponse;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
+import java.text.NumberFormat;
+import java.util.List;
+
 import at.huber.youtubeExtractor.VideoMeta;
 import at.huber.youtubeExtractor.YouTubeExtractor;
 import at.huber.youtubeExtractor.YtFile;
+import tk.geta.alzheimervr.Dao.SqLite.VideoSqLiteDao;
 import tk.geta.alzheimervr.Dao.Youtube.VideoYoutubeDao;
+import tk.geta.alzheimervr.Interface.OnPostSqLiteVideoExecuteListenerInterface;
 import tk.geta.alzheimervr.Interface.OnPostYoutubeVideoExecuteListenerInterface;
+import tk.geta.alzheimervr.Model.Youtube.ThumbnailsYoutubeModel;
 import tk.geta.alzheimervr.Model.Youtube.VideoYoutubeModel;
 import tk.geta.alzheimervr.R;
 import tk.geta.alzheimervr.Util.Error;
+import tk.geta.alzheimervr.Util.Internet;
 
-public class SalvosVideosFragmentDetail extends AppCompatActivity implements OnPostYoutubeVideoExecuteListenerInterface {
+public class NovoVideoFragmentDetail extends AppCompatActivity implements OnPostSqLiteVideoExecuteListenerInterface, OnPostYoutubeVideoExecuteListenerInterface {
 
     public static final String ARG_VIDEO_ID = "video_id";
 
@@ -48,14 +55,17 @@ public class SalvosVideosFragmentDetail extends AppCompatActivity implements OnP
     public Toolbar toolbar;
     public ProgressDialog progressDialog;
     public TextView textViewDescription;
+    public TextView textViewViewsCount;
+    public ImageView imageView;
     public com.google.api.services.youtube.model.Video video;
+    public VideoYoutubeModel videoModel;
     public CollapsingToolbarLayout collapsingToolbarLayout;
     public FloatingActionButton floatingActionButtonAssistir;
     public FloatingActionButton floatingActionButtonDownload;
     public FloatingActionMenu floatingActionMenu;
     public NestedScrollView activity_videos_detail_nested_scroll_view;
     public IntentFilter intentFilterBroadcastReceiverSuccessful;
-    public Intent intentBroadcastReceiverSuccessful;
+    public YtFile file;
 
     public View.OnClickListener onClickListenerAssistir = new View.OnClickListener() {
         @Override
@@ -81,7 +91,7 @@ public class SalvosVideosFragmentDetail extends AppCompatActivity implements OnP
                 youTubeExtractor.extract(video.getId(), true, false);
             } else {
                 progressDialog.dismiss();
-                Error.execute(SalvosVideosFragmentDetail.this, new Exception("Falha ao pegar as informações"));
+                Error.execute(NovoVideoFragmentDetail.this, new Exception("Falha ao pegar as informações"));
             }
         }
     };
@@ -95,12 +105,12 @@ public class SalvosVideosFragmentDetail extends AppCompatActivity implements OnP
         }
     };
 
-    public YouTubeExtractor youTubeExtractor = new YouTubeExtractor(SalvosVideosFragmentDetail.this) {
+    public YouTubeExtractor youTubeExtractor = new YouTubeExtractor(NovoVideoFragmentDetail.this) {
         @Override
         protected void onExtractionComplete(SparseArray<YtFile> sparseArray, VideoMeta videoMeta) {
             if (sparseArray != null) {
                 int itag = 22;
-                YtFile file = sparseArray.get(itag);
+                file = sparseArray.get(itag);
 
                 if (file != null) {
                     String path = Environment.DIRECTORY_MOVIES.concat("/" + getString(R.string.app_name));
@@ -134,17 +144,22 @@ public class SalvosVideosFragmentDetail extends AppCompatActivity implements OnP
                     if (cursor.moveToFirst()) {
                         int downloadStatus = cursor.getInt(cursor.getColumnIndex(DownloadManager.COLUMN_STATUS));
                         if (downloadStatus == DownloadManager.STATUS_SUCCESSFUL) {
-                            new VideoYoutubeModel(video);
+                            videoModel = new VideoYoutubeModel(video, file.getFormat());
+                            if(imageView != null)
+                                ThumbnailsYoutubeModel.getMaxResolution(videoModel.getSnippet().getThumbnails())
+                                    .setBase64(imageView)
+                                    .save();
+
                         } else {
-                            Toast.makeText(SalvosVideosFragmentDetail.this, "Falha ao fazer o Download do Arquivo", Toast.LENGTH_LONG).show();
+                            Toast.makeText(NovoVideoFragmentDetail.this, "Falha ao fazer o Download do Arquivo", Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        Toast.makeText(SalvosVideosFragmentDetail.this, "Falha ao capturar informações do VideoYoutubeDao", Toast.LENGTH_LONG).show();
+                        Toast.makeText(NovoVideoFragmentDetail.this, "Falha ao capturar informações do VideoYoutubeDao", Toast.LENGTH_LONG).show();
                     }
 
                     cursor.close();
                 } catch (Exception e) {
-                    Error.execute(SalvosVideosFragmentDetail.this, e);
+                    Error.execute(NovoVideoFragmentDetail.this, e);
                 }
             }
         }
@@ -153,8 +168,13 @@ public class SalvosVideosFragmentDetail extends AppCompatActivity implements OnP
     public Target targetThumbnail = new Target() {
         @Override
         public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-            ImageView imageView = new ImageView(SalvosVideosFragmentDetail.this);
+            imageView = new ImageView(NovoVideoFragmentDetail.this);
             imageView.setImageBitmap(bitmap);
+
+            if(videoModel != null)
+                ThumbnailsYoutubeModel.getMaxResolution(videoModel.getSnippet().getThumbnails())
+                        .setBase64(imageView)
+                        .save();
 
             collapsingToolbarLayout.setBackground(imageView.getDrawable());
             setSupportActionBar(toolbar);
@@ -162,7 +182,7 @@ public class SalvosVideosFragmentDetail extends AppCompatActivity implements OnP
 
         @Override
         public void onBitmapFailed(Drawable errorDrawable) {
-            Error.execute(SalvosVideosFragmentDetail.this, new Exception("Falha ao carregar a Imagem"));
+            Error.execute(NovoVideoFragmentDetail.this, new Exception("Falha ao carregar a Imagem"));
             collapsingToolbarLayout.setBackground(errorDrawable);
             setSupportActionBar(toolbar);
         }
@@ -181,6 +201,7 @@ public class SalvosVideosFragmentDetail extends AppCompatActivity implements OnP
 
         toolbar = (Toolbar) findViewById(R.id.activity_videos_detail_toolbar);
         textViewDescription = (TextView) findViewById(R.id.activity_videos_detail_description);
+        textViewViewsCount = (TextView) findViewById(R.id.activity_videos_detail_view_count);
         collapsingToolbarLayout = (CollapsingToolbarLayout) findViewById(R.id.activity_videos_detail_toolbar_layout);
         floatingActionMenu = (FloatingActionMenu) findViewById(R.id.activity_videos_detail_fab_menu);
 
@@ -193,21 +214,21 @@ public class SalvosVideosFragmentDetail extends AppCompatActivity implements OnP
         floatingActionButtonDownload = (FloatingActionButton) findViewById(R.id.activity_videos_detail_fab_menu_item_download);
         floatingActionButtonDownload.setOnClickListener(onClickListenerDownload);
 
-        progressDialog = new ProgressDialog(SalvosVideosFragmentDetail.this);
+        progressDialog = new ProgressDialog(NovoVideoFragmentDetail.this);
         progressDialog.setMessage("Carregando");
         progressDialog.setIndeterminate(true);
 
         intentFilterBroadcastReceiverSuccessful = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
-        if(intentBroadcastReceiverSuccessful == null)
-            intentBroadcastReceiverSuccessful = registerReceiver(broadcastReceiverSuccessful, intentFilterBroadcastReceiverSuccessful);
 
         if (getIntent().getExtras().containsKey(ARG_VIDEO_ID)) {
             String videoID = getIntent().getStringExtra(ARG_VIDEO_ID);
 
             if (videoID != null) {
-                new VideoYoutubeDao(this).byIDs(videoID)
-                        .setOnPostYoutubeVideoExecuteListenerInterface(this)
-                        .execute();
+                if (Internet.isConnect(this)) {
+                    new VideoYoutubeDao(this).byIDs(videoID)
+                            .setOnPostYoutubeVideoExecuteListenerInterface(this)
+                            .execute();
+                }
             }
         }
     }
@@ -227,9 +248,19 @@ public class SalvosVideosFragmentDetail extends AppCompatActivity implements OnP
             case VideoYoutubeDao.BY_IDS_VIDEO_METHOD_TYPE:
                 video = videoListResponse.getItems().get(0);
 
+                new VideoSqLiteDao(this)
+                    .setIdVideo(video.getId())
+                    .setOnPostSqLiteVideoExecuteListenerInterface(this)
+                    .execute();
+
                 toolbar.setTitle(video.getSnippet().getTitle());
                 toolbar.setSubtitle(video.getSnippet().getChannelTitle());
                 textViewDescription.setText(video.getSnippet().getDescription());
+                System.out.println(video.getStatistics().getViewCount());
+                if (video.getStatistics().getViewCount().bitLength() > 0) {
+                    textViewViewsCount.setVisibility(View.VISIBLE);
+                    textViewViewsCount.setText(NumberFormat.getInstance().format(video.getStatistics().getViewCount()).concat(" Views"));
+                }
 
                 String url = getMaxResolution(video.getSnippet().getThumbnails()).getUrl();
                 if (url != null && !url.isEmpty()) {
@@ -242,6 +273,24 @@ public class SalvosVideosFragmentDetail extends AppCompatActivity implements OnP
                 }
                 break;
         }
+    }
+
+    @Override
+    public void onPostSqLiteVideoExecuteListener(List<VideoYoutubeModel> videoList) {
+        if (!videoList.isEmpty())
+            floatingActionButtonDownload.setVisibility(View.GONE);
+    }
+
+    @Override
+    protected void onResume() {
+        registerReceiver(broadcastReceiverSuccessful, intentFilterBroadcastReceiverSuccessful);
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        unregisterReceiver(broadcastReceiverSuccessful);
+        super.onPause();
     }
 
     public Thumbnail getMaxResolution(ThumbnailDetails thumbnailDetails) {

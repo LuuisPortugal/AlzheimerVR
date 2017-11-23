@@ -17,7 +17,7 @@ import com.google.api.services.youtube.model.SearchResult;
 
 import java.util.ArrayList;
 
-import tk.geta.alzheimervr.Adapter.VideoAdapter;
+import tk.geta.alzheimervr.Adapter.NovoVideoAdapter;
 import tk.geta.alzheimervr.Dao.Youtube.SearchYoutubeDao;
 import tk.geta.alzheimervr.Interface.OnBackPressedListenerInterface;
 import tk.geta.alzheimervr.Interface.OnCreateOptionsMenuListenerInterface;
@@ -29,6 +29,7 @@ import tk.geta.alzheimervr.Model.Youtube.ThumbnailsYoutubeModel;
 import tk.geta.alzheimervr.Model.Youtube.VideoYoutubeModel;
 import tk.geta.alzheimervr.R;
 import tk.geta.alzheimervr.Util.Error;
+import tk.geta.alzheimervr.Util.Internet;
 import tk.geta.alzheimervr.Util.Keyboard;
 
 public class NovosVideosFragment extends Fragment implements OnGetPageTitleListenerInterface, OnBackPressedListenerInterface, OnPostYoutubeSearchExecuteListenerInterface, OnCreateOptionsMenuListenerInterface, View.OnScrollChangeListener, SearchView.OnQueryTextListener {
@@ -38,7 +39,7 @@ public class NovosVideosFragment extends Fragment implements OnGetPageTitleListe
     private SearchView appBarSearchVideos;
     private String queryAppBarSearchVideos;
     private RecyclerView recyclerViewVideos;
-    private VideoAdapter adapterRecyclerViewVideos;
+    private NovoVideoAdapter adapterRecyclerViewVideos;
     private LinearLayoutManager linearLayoutManager;
     private boolean isRefreshingOnFinishRecicleview = false;
     private String defaultQueryAppBarSearchVideos = "Maquete 360";
@@ -58,10 +59,12 @@ public class NovosVideosFragment extends Fragment implements OnGetPageTitleListe
 
     @Override
     public void onResume() {
-        new SearchYoutubeDao(getContext()).byQuery(defaultQueryAppBarSearchVideos)
-                .setOnPostExecuteListener(this)
-                .setMaxResult(50)
-                .execute();
+        if (Internet.isConnect(getContext())) {
+            new SearchYoutubeDao(getContext()).byQuery(defaultQueryAppBarSearchVideos)
+                    .setOnPostExecuteListener(this)
+                    .setMaxResult(50)
+                    .execute();
+        }
         super.onResume();
     }
 
@@ -73,7 +76,7 @@ public class NovosVideosFragment extends Fragment implements OnGetPageTitleListe
         recyclerViewVideos = (RecyclerView) layoutInflater.findViewById(R.id.videos_fragment_novos_list);
         recyclerViewVideos.setOnScrollChangeListener(this);
 
-        adapterRecyclerViewVideos = new VideoAdapter();
+        adapterRecyclerViewVideos = new NovoVideoAdapter();
         recyclerViewVideos.setAdapter(adapterRecyclerViewVideos);
         linearLayoutManager = (LinearLayoutManager) recyclerViewVideos.getLayoutManager();
 

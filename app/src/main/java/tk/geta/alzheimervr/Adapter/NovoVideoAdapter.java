@@ -19,32 +19,32 @@ import tk.geta.alzheimervr.Model.Youtube.ThumbnailsYoutubeModel;
 import tk.geta.alzheimervr.Model.Youtube.VideoYoutubeModel;
 import tk.geta.alzheimervr.R;
 import tk.geta.alzheimervr.Util.CircleTransform;
-import tk.geta.alzheimervr.View.Detail.NovosVideosFragmentDetail;
+import tk.geta.alzheimervr.View.Detail.NovoVideoFragmentDetail;
 
-public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> {
+public class NovoVideoAdapter extends RecyclerView.Adapter<NovoVideoAdapter.ViewHolder> {
 
     private Context context;
 
     private List<VideoYoutubeModel> mValues = new ArrayList<VideoYoutubeModel>();
 
-    public VideoAdapter() { }
+    public NovoVideoAdapter() { }
 
-    public VideoAdapter(List<VideoYoutubeModel> list) {
+    public NovoVideoAdapter(List<VideoYoutubeModel> list) {
         this.mValues = list;
     }
 
-    public VideoAdapter add(VideoYoutubeModel item) {
+    public NovoVideoAdapter add(VideoYoutubeModel item) {
         mValues.add(item);
         return this;
     }
 
-    public VideoAdapter merge(List<VideoYoutubeModel> searchResultList){
+    public NovoVideoAdapter merge(List<VideoYoutubeModel> searchResultList){
         for (Object searchResult : searchResultList.toArray())
             mValues.add((VideoYoutubeModel) searchResult);
         return this;
     }
 
-    public VideoAdapter setValues(List<VideoYoutubeModel> mValuesPara) {
+    public NovoVideoAdapter setValues(List<VideoYoutubeModel> mValuesPara) {
         mValues = mValuesPara;
         return this;
     }
@@ -83,9 +83,9 @@ public class VideoAdapter extends RecyclerView.Adapter<VideoAdapter.ViewHolder> 
             holder.mView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View itemClicked) {
-                    Intent intent = new Intent(itemClicked.getContext(), NovosVideosFragmentDetail.class);
+                    Intent intent = new Intent(itemClicked.getContext(), NovoVideoFragmentDetail.class);
                     intent.putExtra(
-                            NovosVideosFragmentDetail.ARG_VIDEO_ID,
+                            NovoVideoFragmentDetail.ARG_VIDEO_ID,
                             holder.mItem.getIdVideo()
                     );
 

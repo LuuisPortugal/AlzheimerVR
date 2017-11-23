@@ -3,6 +3,9 @@ package tk.geta.alzheimervr.Model.Youtube;
 import com.google.api.services.youtube.model.Video;
 import com.orm.SugarRecord;
 
+import at.huber.youtubeExtractor.Format;
+import tk.geta.alzheimervr.Model.YtFile.FormatYtFileModel;
+
 public class VideoYoutubeModel extends SugarRecord {
     public static final String KIND = "youtube#video";
 
@@ -12,11 +15,12 @@ public class VideoYoutubeModel extends SugarRecord {
     SnippetYoutubeModel snippet;
     ContentDetailYoutubeModel contentDetails;
     StatisticYoutubeModel statistics;
+    FormatYtFileModel format;
 
     public VideoYoutubeModel() {
     }
 
-    public VideoYoutubeModel(Video video) {
+    public VideoYoutubeModel(Video video, Format formatYtFile) {
         if(video != null) {
             if (video.getId() != null)
                 this.idVideo = video.getId();
@@ -116,6 +120,24 @@ public class VideoYoutubeModel extends SugarRecord {
                     this.statistics.viewCount = video.getStatistics().getViewCount().longValue();
                 this.contentDetails.save();
             }
+
+            if (formatYtFile != null){
+                this.format = new FormatYtFileModel();
+                if(formatYtFile.getExt() != null)
+                    this.format.ext = formatYtFile.getExt();
+                if(formatYtFile.getHeight() != 0)
+                    this.format.height = formatYtFile.getHeight();
+                if(formatYtFile.getFps() != 0)
+                    this.format.fps = formatYtFile.getFps();
+                if(formatYtFile.getAudioBitrate() != 0)
+                    this.format.audioBitrate = formatYtFile.getAudioBitrate();
+                if(formatYtFile.isDashContainer())
+                    this.format.isDashContainer = formatYtFile.isDashContainer();
+                if(formatYtFile.isHlsContent())
+                    this.format.isHlsContent = formatYtFile.isHlsContent();
+                this.format.save();
+            }
+
             this.save();
         }
     }
@@ -180,6 +202,15 @@ public class VideoYoutubeModel extends SugarRecord {
 
     public VideoYoutubeModel setStatistics(StatisticYoutubeModel statistics) {
         this.statistics = statistics;
+        return this;
+    }
+
+    public FormatYtFileModel getFormat() {
+        return format;
+    }
+
+    public VideoYoutubeModel setFormat(FormatYtFileModel format) {
+        this.format = format;
         return this;
     }
 }

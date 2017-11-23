@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import tk.geta.alzheimervr.Adapter.VideoAdapter;
+import tk.geta.alzheimervr.Adapter.SalvoVideoAdapter;
 import tk.geta.alzheimervr.Dao.SqLite.VideoSqLiteDao;
 import tk.geta.alzheimervr.Interface.OnGetPageTitleListenerInterface;
 import tk.geta.alzheimervr.Interface.OnPostSqLiteListVideoExecuteListenerInterface;
@@ -20,7 +20,7 @@ import tk.geta.alzheimervr.Util.Error;
 public class SalvosVideosFragment extends Fragment implements OnGetPageTitleListenerInterface, OnPostSqLiteListVideoExecuteListenerInterface {
 
     private RecyclerView recyclerViewVideos;
-    private VideoAdapter adapterRecyclerViewVideos;
+    private SalvoVideoAdapter adapterRecyclerViewVideos;
 
     public SalvosVideosFragment() {
 
@@ -49,7 +49,7 @@ public class SalvosVideosFragment extends Fragment implements OnGetPageTitleList
         View layoutInflater = inflater.inflate(R.layout.videos_fragment_salvos, container, false);
 
         recyclerViewVideos = (RecyclerView) layoutInflater.findViewById(R.id.videos_fragment_salvos_list);
-        adapterRecyclerViewVideos = new VideoAdapter();
+        adapterRecyclerViewVideos = new SalvoVideoAdapter();
         recyclerViewVideos.setAdapter(adapterRecyclerViewVideos);
 
         return layoutInflater;
