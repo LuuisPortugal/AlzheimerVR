@@ -124,7 +124,7 @@ public class NovoVideoFragmentDetail extends AppCompatActivity implements OnPost
                     request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
 
                     downloadServiceVideoResquestID = ((DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE)).enqueue(request);
-                    progressDialog.dismiss();
+                    progressDialog.setMessage("Baixando");
                 }
             }
         }
@@ -149,7 +149,7 @@ public class NovoVideoFragmentDetail extends AppCompatActivity implements OnPost
                                 ThumbnailsYoutubeModel.getMaxResolution(videoModel.getSnippet().getThumbnails())
                                     .setBase64(imageView)
                                     .save();
-
+                            progressDialog.dismiss();
                         } else {
                             Toast.makeText(NovoVideoFragmentDetail.this, "Falha ao fazer o Download do Arquivo", Toast.LENGTH_LONG).show();
                         }
@@ -160,6 +160,7 @@ public class NovoVideoFragmentDetail extends AppCompatActivity implements OnPost
                     cursor.close();
                 } catch (Exception e) {
                     Error.execute(NovoVideoFragmentDetail.this, e);
+                    progressDialog.dismiss();
                 }
             }
         }
@@ -218,7 +219,12 @@ public class NovoVideoFragmentDetail extends AppCompatActivity implements OnPost
         progressDialog.setMessage("Carregando");
         progressDialog.setIndeterminate(true);
 
-        intentFilterBroadcastReceiverSuccessful = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        try{
+            intentFilterBroadcastReceiverSuccessful = new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+            registerReceiver(broadcastReceiverSuccessful, intentFilterBroadcastReceiverSuccessful);
+        } catch (Exception e){
+            Error.execute(this, e);
+        }
 
         if (getIntent().getExtras().containsKey(ARG_VIDEO_ID)) {
             String videoID = getIntent().getStringExtra(ARG_VIDEO_ID);
@@ -256,7 +262,6 @@ public class NovoVideoFragmentDetail extends AppCompatActivity implements OnPost
                 toolbar.setTitle(video.getSnippet().getTitle());
                 toolbar.setSubtitle(video.getSnippet().getChannelTitle());
                 textViewDescription.setText(video.getSnippet().getDescription());
-                System.out.println(video.getStatistics().getViewCount());
                 if (video.getStatistics().getViewCount().bitLength() > 0) {
                     textViewViewsCount.setVisibility(View.VISIBLE);
                     textViewViewsCount.setText(NumberFormat.getInstance().format(video.getStatistics().getViewCount()).concat(" Views"));
@@ -279,18 +284,6 @@ public class NovoVideoFragmentDetail extends AppCompatActivity implements OnPost
     public void onPostSqLiteVideoExecuteListener(List<VideoYoutubeModel> videoList) {
         if (!videoList.isEmpty())
             floatingActionButtonDownload.setVisibility(View.GONE);
-    }
-
-    @Override
-    protected void onResume() {
-        registerReceiver(broadcastReceiverSuccessful, intentFilterBroadcastReceiverSuccessful);
-        super.onResume();
-    }
-
-    @Override
-    protected void onPause() {
-        unregisterReceiver(broadcastReceiverSuccessful);
-        super.onPause();
     }
 
     public Thumbnail getMaxResolution(ThumbnailDetails thumbnailDetails) {

@@ -19,6 +19,6 @@ public class Error {
 
     public static void execute(Context context, Exception e){
         e.printStackTrace();
-        Toast.makeText(context, "There was an error: " + e.getCause() + " : " + e.getMessage(), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "There was an error: " + e.getMessage(), Toast.LENGTH_LONG).show();
     }
 }

@@ -1,5 +1,6 @@
 package tk.geta.alzheimervr.View.Detail;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,9 +44,12 @@ public class SalvoVideoFragmentDetail extends AppCompatActivity implements OnPos
     public View.OnClickListener onClickListenerAssistir = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+            if (floatingActionMenu.isOpened())
+                floatingActionMenu.close(true);
+
             Intent intent = new Intent(SalvoVideoFragmentDetail.this, VrPlayerActivity.class);
             intent.putExtra(NovoVideoFragmentDetail.ARG_VIDEO_ID, video.getIdVideo());
-            startActivity(intent);
+            startActivityForResult(intent, VrPlayerActivity.REQUEST_CODE_FOR_FINISH);
         }
     };
 
@@ -57,6 +61,23 @@ public class SalvoVideoFragmentDetail extends AppCompatActivity implements OnPos
             return activity_videos_detail_nested_scroll_view.onTouchEvent(event);
         }
     };
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == VrPlayerActivity.REQUEST_CODE_FOR_FINISH) {
+            if(resultCode == Activity.RESULT_OK) {
+                if (data != null && data.getExtras() != null && data.getExtras().containsKey(ARG_VIDEO_ID)) {
+                    String videoID = data.getStringExtra(ARG_VIDEO_ID);
+
+                    if (videoID != null) {
+                        new VideoSqLiteDao(this).setIdVideo(videoID)
+                                .setOnPostSqLiteVideoExecuteListenerInterface(this)
+                                .execute();
+                    }
+                }
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +104,7 @@ public class SalvoVideoFragmentDetail extends AppCompatActivity implements OnPos
         progressDialog.setMessage("Carregando");
         progressDialog.setIndeterminate(true);
 
-        if (getIntent().getExtras().containsKey(ARG_VIDEO_ID)) {
+        if (getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().containsKey(ARG_VIDEO_ID)) {
             String videoID = getIntent().getStringExtra(ARG_VIDEO_ID);
 
             if (videoID != null) {

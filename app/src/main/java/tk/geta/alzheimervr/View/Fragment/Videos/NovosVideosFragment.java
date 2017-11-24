@@ -42,7 +42,7 @@ public class NovosVideosFragment extends Fragment implements OnGetPageTitleListe
     private NovoVideoAdapter adapterRecyclerViewVideos;
     private LinearLayoutManager linearLayoutManager;
     private boolean isRefreshingOnFinishRecicleview = false;
-    private String defaultQueryAppBarSearchVideos = "Maquete 360";
+    private String defaultQueryAppBarSearchVideos = "Realidade Virtual 360";
 
     public NovosVideosFragment() {
 
