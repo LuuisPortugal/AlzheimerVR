@@ -14,11 +14,11 @@ public class Error {
 
     public static void execute(Context context, Throwable t){
         t.printStackTrace();
-        Toast.makeText(context, "There was an error: " + t.getCause() + " : " + t.getMessage(), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Erro: " + t.getCause() + " : " + t.getMessage(), Toast.LENGTH_LONG).show();
     }
 
     public static void execute(Context context, Exception e){
         e.printStackTrace();
-        Toast.makeText(context, "There was an error: " + e.getMessage(), Toast.LENGTH_LONG).show();
+        Toast.makeText(context, "Erro: " + e.getMessage(), Toast.LENGTH_LONG).show();
     }
 }

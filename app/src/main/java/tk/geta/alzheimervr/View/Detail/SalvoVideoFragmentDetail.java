@@ -16,6 +16,7 @@ import android.widget.TextView;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
+import java.io.File;
 import java.util.List;
 
 import tk.geta.alzheimervr.Dao.SqLite.VideoSqLiteDao;
@@ -23,6 +24,7 @@ import tk.geta.alzheimervr.Interface.OnPostSqLiteVideoExecuteListenerInterface;
 import tk.geta.alzheimervr.Model.Youtube.ThumbnailsYoutubeModel;
 import tk.geta.alzheimervr.Model.Youtube.VideoYoutubeModel;
 import tk.geta.alzheimervr.R;
+import tk.geta.alzheimervr.Util.Error;
 import tk.geta.alzheimervr.View.Player.VrPlayerActivity;
 
 public class SalvoVideoFragmentDetail extends AppCompatActivity implements OnPostSqLiteVideoExecuteListenerInterface {
@@ -38,6 +40,7 @@ public class SalvoVideoFragmentDetail extends AppCompatActivity implements OnPos
     public VideoYoutubeModel video;
     public CollapsingToolbarLayout collapsingToolbarLayout;
     public FloatingActionButton floatingActionButtonAssistir;
+    public FloatingActionButton floatingActionButtonDownload;
     public FloatingActionMenu floatingActionMenu;
     public NestedScrollView activity_videos_detail_nested_scroll_view;
 
@@ -50,6 +53,13 @@ public class SalvoVideoFragmentDetail extends AppCompatActivity implements OnPos
             Intent intent = new Intent(SalvoVideoFragmentDetail.this, VrPlayerActivity.class);
             intent.putExtra(NovoVideoFragmentDetail.ARG_VIDEO_ID, video.getIdVideo());
             startActivityForResult(intent, VrPlayerActivity.REQUEST_CODE_FOR_FINISH);
+        }
+    };
+
+    public View.OnClickListener onClickListenerDownload = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
         }
     };
 
@@ -96,9 +106,8 @@ public class SalvoVideoFragmentDetail extends AppCompatActivity implements OnPos
         floatingActionButtonAssistir = (FloatingActionButton) findViewById(R.id.activity_videos_detail_fab_menu_item_assistir);
         floatingActionButtonAssistir.setOnClickListener(onClickListenerAssistir);
 
-        //Esconde o Botão
-        findViewById(R.id.activity_videos_detail_fab_menu_item_download)
-            .setVisibility(View.GONE);
+        floatingActionButtonDownload = (FloatingActionButton) findViewById(R.id.activity_videos_detail_fab_menu_item_download);
+        floatingActionButtonDownload.setOnClickListener(onClickListenerDownload);
 
         progressDialog = new ProgressDialog(SalvoVideoFragmentDetail.this);
         progressDialog.setMessage("Carregando");
@@ -136,5 +145,16 @@ public class SalvoVideoFragmentDetail extends AppCompatActivity implements OnPos
         collapsingToolbarLayout.setBackground(imageView.getDrawable());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        File videoFile = new File(video.getPath(this));
+        System.out.println(videoFile);
+        if(videoFile.exists()){
+            floatingActionButtonDownload.setVisibility(View.GONE);
+            floatingActionButtonAssistir.setVisibility(View.VISIBLE);
+        }else{
+            floatingActionButtonAssistir.setVisibility(View.GONE);
+            floatingActionButtonDownload.setVisibility(View.VISIBLE);
+            Error.execute(this, new Exception("o Arquivo de video não foi encontrado! Por favor Baixe novamente"));
+        }
     }
 }

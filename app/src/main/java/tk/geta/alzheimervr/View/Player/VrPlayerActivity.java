@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -226,9 +225,6 @@ public class VrPlayerActivity extends AppCompatActivity implements OnPostSqLiteV
     public void onPostSqLiteVideoExecuteListener(List<VideoYoutubeModel> videoYoutubeModelList) {
         try {
             video = videoYoutubeModelList.get(0);
-            String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).getPath();
-            String path = dir.concat("/" + getString(R.string.app_name));
-            String filename = video.getIdVideo().concat("." + video.getFormat().getExt());
 
             ActionBar actionBar = getSupportActionBar();
             if (actionBar != null) {
@@ -236,7 +232,7 @@ public class VrPlayerActivity extends AppCompatActivity implements OnPostSqLiteV
             }
 
             VrVideoView.Options options = new VrVideoView.Options();
-            mContentView.loadVideo(Uri.parse(path.concat("/" + filename)), options);
+            mContentView.loadVideo(Uri.parse(video.getPath(this)), options);
         } catch (IOException e) {
             Error.execute(this, e);
             onBackPressed();

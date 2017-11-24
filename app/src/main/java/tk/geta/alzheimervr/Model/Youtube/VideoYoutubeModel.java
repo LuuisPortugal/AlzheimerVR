@@ -1,10 +1,14 @@
 package tk.geta.alzheimervr.Model.Youtube;
 
+import android.content.Context;
+import android.os.Environment;
+
 import com.google.api.services.youtube.model.Video;
 import com.orm.SugarRecord;
 
 import at.huber.youtubeExtractor.Format;
 import tk.geta.alzheimervr.Model.YtFile.FormatYtFileModel;
+import tk.geta.alzheimervr.R;
 
 public class VideoYoutubeModel extends SugarRecord {
     public static final String KIND = "youtube#video";
@@ -212,5 +216,12 @@ public class VideoYoutubeModel extends SugarRecord {
     public VideoYoutubeModel setFormat(FormatYtFileModel format) {
         this.format = format;
         return this;
+    }
+
+    public String getPath(Context context){
+        String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).getPath();
+        String path = dir.concat("/" + context.getString(R.string.app_name));
+        String filename = this.getIdVideo().concat("." + this.getFormat().getExt());
+        return path.concat("/" + filename);
     }
 }
